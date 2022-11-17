@@ -5,11 +5,15 @@ from collections import OrderedDict
 from loader.prepData.brat import brat_loader
 from loader.prepData.sentence import prep_sentence_offsets, process_input
 from loader.prepData.entity import process_etypes, process_tags, process_entities
+import json
 
-
-def prep_input_data(files_fold, params):
+def prep_input_data(files_fold, params,json_file=None):
     # load data from *.ann files
-    entities0, sentences0 = brat_loader(files_fold, params)
+    if json_file is None:
+        entities0, sentences0 = brat_loader(files_fold, params)
+    else:
+        entities0, sentences0 = gen_sent_entities_json(json_file)
+
 
     # sentence offsets
     sentences1 = prep_sentence_offsets(sentences0)
@@ -50,3 +54,18 @@ def prep_input_data(files_fold, params):
 
     return {'entities': entities1, 'terms': terms0, 'sentences': sentences1, 'input': input1,
             'g_entity_ids_': g_entity_ids_}
+
+
+def gen_sent_entities_json(jsonf):
+
+    with open(jsonf) as json_file:
+        data = json.load(json_file)
+
+    sentences = OrderedDict(data)
+
+    entities = {pmid: OrderedDict([('data', OrderedDict([])), ('types', []), ('counted_types', {}), ('ids', []), ('terms', [])])
+                for pmid,valus in data.items()
+    }
+
+    return entities,sentences
+    
