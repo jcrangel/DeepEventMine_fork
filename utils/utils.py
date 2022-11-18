@@ -73,6 +73,12 @@ def _parsing():
     args = parser.parse_args()
     return args
 
+def _parsing_jupyter():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--yaml', default='/home/julio/repos/event_finder/DeepEventMine_fork/experiments/pubmed100/configs/predict-pubmed-100.yaml',
+                        type=str, help='yaml file')
+    args = parser.parse_args('')
+    return args
 
 def _ordered_load(stream, Loader=yaml.Loader, object_pairs_hook=OrderedDict):
     """
@@ -164,58 +170,61 @@ def padding_samples(ids_, token_mask_, attention_mask_, span_indices_, span_labe
 
 def get_tensors(data_ids, data, params):
     tokens = []
+    ids = []
+
+    dataids = data_ids[0].tolist()
 
     ids = [
         data["nn_data"]["ids"][tr_data_id]
-        for tr_data_id in data_ids[0].tolist()
+        for tr_data_id in dataids
     ]
     token_masks = [
         data["nn_data"]["token_mask"][tr_data_id]
-        for tr_data_id in data_ids[0].tolist()
+        for tr_data_id in dataids
     ]
     attention_masks = [
         data["nn_data"]["attention_mask"][tr_data_id]
-        for tr_data_id in data_ids[0].tolist()
+        for tr_data_id in dataids
     ]
     span_indices = [
         data["nn_data"]["span_indices"][tr_data_id]
-        for tr_data_id in data_ids[0].tolist()
+        for tr_data_id in dataids
     ]
     span_labels = [
         data["nn_data"]["span_labels"][tr_data_id]
-        for tr_data_id in data_ids[0].tolist()
+        for tr_data_id in dataids
     ]
     span_labels_match_rel = [
         data["nn_data"]["span_labels_match_rel"][tr_data_id]
-        for tr_data_id in data_ids[0].tolist()
+        for tr_data_id in dataids
     ]
 
     entity_masks = [
         data["nn_data"]["entity_masks"][tr_data_id]
-        for tr_data_id in data_ids[0].tolist()
+        for tr_data_id in dataids
     ]
     trigger_masks = [
         data["nn_data"]["trigger_masks"][tr_data_id]
-        for tr_data_id in data_ids[0].tolist()
+        for tr_data_id in dataids
     ]
 
     span_terms = [
         data["nn_data"]["span_terms"][tr_data_id]
-        for tr_data_id in data_ids[0].tolist()
+        for tr_data_id in dataids
     ]
 
-    etypes = [data["etypes"][tr_data_id] for tr_data_id in data_ids[0].tolist()]
+    etypes = [data["etypes"][tr_data_id] for tr_data_id in dataids]
 
-    tokens = copy.deepcopy(tokens)
-    ids = copy.deepcopy(ids)
-    token_masks = copy.deepcopy(token_masks)
-    attention_masks = copy.deepcopy(attention_masks)
-    span_indices = copy.deepcopy(span_indices)
-    span_labels = copy.deepcopy(span_labels)
-    span_labels_match_rel = copy.deepcopy(span_labels_match_rel)
-    entity_masks = copy.deepcopy(entity_masks)
-    trigger_masks = copy.deepcopy(trigger_masks)
-    span_terms = copy.deepcopy(span_terms)
+    # tokens = copy.deepcopy(tokens)
+    # ids = copy.deepcopy(ids)
+    # token_masks = copy.deepcopy(token_masks)
+    # attention_masks = copy.deepcopy(attention_masks)
+    # span_indices = copy.deepcopy(span_indices)
+    # span_labels = copy.deepcopy(span_labels)
+    # span_labels_match_rel = copy.deepcopy(span_labels_match_rel)
+    # entity_masks = copy.deepcopy(entity_masks)
+    # trigger_masks = copy.deepcopy(trigger_masks)
+    # span_terms = copy.deepcopy(span_terms)
 
     max_span_labels = padding_samples(
         ids,
@@ -254,7 +263,7 @@ def get_tensors(data_ids, data, params):
     batch_trigger_masks = torch.tensor(
         trigger_masks, dtype=torch.int8, device=params["device"]
     )
-
+    # print(attention_masks[0])
     return (
         tokens,
         batch_ids,

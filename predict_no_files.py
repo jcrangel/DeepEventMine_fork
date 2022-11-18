@@ -11,6 +11,7 @@ from nets import deepEM
 from loader.prepData import prepdata
 from loader.prepNN import prep4nn
 from utils import utils
+from torch.profiler import profile, record_function, ProfilerActivity
 
 
 def main():
@@ -43,9 +44,10 @@ def main():
     # Set predict settings value for params
     parameters['gpu'] = pred_params['gpu']
     parameters['batchsize'] = pred_params['batchsize']
+    print('GPU available:' ,torch.cuda.is_available())
     if parameters['gpu'] >= 0:
         device = torch.device("cuda:" + str(parameters['gpu']) if torch.cuda.is_available() else "cpu")
-        torch.cuda.set_device(parameters['gpu'])
+        # torch.cuda.set_device(parameters['gpu'])
     else:
         device = torch.device("cpu")
     parameters['device'] = device
@@ -87,6 +89,13 @@ def main():
 
     deepee_model.to(device)
 
+    # with profile(activities=[
+    #         ProfilerActivity.CPU, ProfilerActivity.CUDA], record_shapes=True,with_stack=True) as prof:
+    #     with record_function("model_inference"):
+
+
+
+
     predict(model=deepee_model,
             result_dir=result_dir,
             eval_dataloader=test_dataloader,
@@ -94,7 +103,14 @@ def main():
             g_entity_ids_=test_data['g_entity_ids_'],
             params=parameters)
 
-    # print('Done!')
+    # print(prof.key_averages().table(sort_by="cuda_time_total", row_limit=10))
+
+
+    #     # Print aggregated stats
+    # print(prof.key_averages(group_by_stack_n=5).table(
+    #     sort_by="self_cuda_time_total", row_limit=10))
+
+    # prof.export_chrome_trace("trace.json")
 
 
 def read_test_data(test_data, params):

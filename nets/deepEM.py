@@ -9,6 +9,10 @@ from nets import EVNet
 from nets import RELNet
 from nets.NERNet import NestedNERModel
 from utils import utils
+# from torch.profiler import profile, record_function, ProfilerActivity
+import time
+
+
 
 cpu_device = torch.device("cpu")
 
@@ -121,6 +125,10 @@ class DeepEM(nn.Module):
         nn_tokens, nn_ids, nn_token_mask, nn_attention_mask, nn_span_indices, nn_span_labels, nn_span_labels_match_rel, nn_entity_masks, nn_trigger_masks, span_terms, \
         etypes, max_span_labels = batch_input
 
+
+
+        start_time = time.time()
+
         # predict entity
         e_preds, e_golds, sentence_sections, span_masks, embeddings, sentence_emb, trigger_indices = self.NER_layer(
             all_tokens=nn_tokens,
@@ -131,6 +139,7 @@ class DeepEM(nn.Module):
             all_trigger_masks=nn_trigger_masks,
             all_span_labels=nn_span_labels,
         )
+        print("NER LAYER: --- %s seconds ---" % (time.time() - start_time))
 
         # run on CPU
         sentence_sections = sentence_sections.detach().cpu().numpy()[:-1]
@@ -269,11 +278,17 @@ class DeepEM(nn.Module):
                      'ent_embeds': ent_embeds, 'tr_embeds': tr_embeds, 'tr_ids': tr_ids,
                      'ent_types': ent_types, 'pairs_idx': pairs_idx, 'e_types': etypes.long(),
                      'sentence_embeds': sentence_emb}
+        
+        start_time = time.time()
 
         rel_preds = self.REL_layer(ner_preds)
+        print("REL LAYER: --- %s seconds ---" % (time.time() - start_time))
+
         if rel_preds['next']:
+            start_time = time.time()
 
             ev_preds, empty_pred = self.EV_layer(ner_preds, rel_preds)
+            print("EV LAYER: --- %s seconds ---" % (time.time() - start_time))
 
             if empty_pred == True:
                 ev_preds = None
@@ -293,6 +308,14 @@ class DeepEM(nn.Module):
 
     def forward(self, batch_input, parameters):
 
+        # with profile(activities=[
+        #         ProfilerActivity.CPU, ProfilerActivity.CUDA], record_shapes=True) as prof:
+        #     with record_function("model_inference"):
+        start_time = time.time()
+
         ner_preds, rel_preds, ev_preds = self.calculate(batch_input)
+        print("ALL FOWARD LAYER: --- %s seconds ---" % (time.time() - start_time))
+
+        # print(prof.key_averages().table(sort_by="cuda_time_total", row_limit=10))
 
         return ner_preds, rel_preds, ev_preds

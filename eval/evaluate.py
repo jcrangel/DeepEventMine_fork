@@ -4,7 +4,7 @@ from tqdm import tqdm
 from eval.evalRE import write_entity_relations
 from eval.evalEV import write_events
 from utils import utils
-
+import time
 
 def predict(model, result_dir, eval_dataloader, eval_data, g_entity_ids_, params):
     mapping_id_tag = params['mappings']['nn_mapping']['id_tag_mapping']
@@ -27,7 +27,7 @@ def predict(model, result_dir, eval_dataloader, eval_data, g_entity_ids_, params
     all_ner_preds, all_ner_golds, all_ner_terms = [], [], []
 
     is_eval_ev = False
-
+    start_time = time.time()
     for step, batch in enumerate(
             tqdm(eval_dataloader, desc="Iteration", leave=False)
     ):
@@ -146,8 +146,12 @@ def predict(model, result_dir, eval_dataloader, eval_data, g_entity_ids_, params
             span_indicess.append([])
 
         # Clear GPU unused RAM:
-        if params['gpu'] >= 0:
-            torch.cuda.empty_cache()
+        # if params['gpu'] >= 0:
+        #     torch.cuda.empty_cache()
+
+        print("PREDICT LOOP: --- %s seconds ---" % (time.time() - start_time))
+
+    file_time = time.time()        
     # write entity and relation prediction
     _ = write_entity_relations(
         result_dir=result_dir,
@@ -169,3 +173,6 @@ def predict(model, result_dir, eval_dataloader, eval_data, g_entity_ids_, params
                      g_entity_ids_=g_entity_ids_,
                      params=params,
                      result_dir=result_dir)
+
+    print("(FILE writing): --- %s seconds ---" % (time.time() - file_time))
+

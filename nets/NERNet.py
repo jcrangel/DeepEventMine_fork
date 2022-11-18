@@ -4,7 +4,7 @@ import torch
 import torch.nn as nn
 
 from bert.modeling import BertModel, BertPreTrainedModel
-
+import time
 
 class NestedNERModel(BertPreTrainedModel):
     def __init__(self, config, params):
@@ -243,6 +243,7 @@ class NestedNERModel(BertPreTrainedModel):
 
         all_preds = torch.gather(all_preds, dim=1, index=all_preds_top_indices)
 
+        start_time = time.time()
         all_preds = all_preds.detach().cpu().numpy()
         all_golds = all_golds.detach().cpu().numpy()
 
@@ -267,6 +268,7 @@ class NestedNERModel(BertPreTrainedModel):
             all_aligned_preds.append(aligned_preds)
 
         all_aligned_preds = np.array(all_aligned_preds)
+        print("NER LOOP: --- %s seconds ---" % (time.time() - start_time))
 
         return (
             all_aligned_preds,
