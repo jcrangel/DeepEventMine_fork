@@ -139,7 +139,7 @@ class DeepEM(nn.Module):
             all_trigger_masks=nn_trigger_masks,
             all_span_labels=nn_span_labels,
         )
-        print("NER LAYER: --- %s seconds ---" % (time.time() - start_time))
+        # print("NER LAYER: --- %s seconds ---" % (time.time() - start_time))
 
         # run on CPU
         sentence_sections = sentence_sections.detach().cpu().numpy()[:-1]
@@ -282,13 +282,13 @@ class DeepEM(nn.Module):
         start_time = time.time()
 
         rel_preds = self.REL_layer(ner_preds)
-        print("REL LAYER: --- %s seconds ---" % (time.time() - start_time))
+        # print("REL LAYER: --- %s seconds ---" % (time.time() - start_time))
 
         if rel_preds['next']:
             start_time = time.time()
 
             ev_preds, empty_pred = self.EV_layer(ner_preds, rel_preds)
-            print("EV LAYER: --- %s seconds ---" % (time.time() - start_time))
+            # print("EV LAYER: --- %s seconds ---" % (time.time() - start_time))
 
             if empty_pred == True:
                 ev_preds = None
@@ -314,7 +314,7 @@ class DeepEM(nn.Module):
         start_time = time.time()
 
         ner_preds, rel_preds, ev_preds = self.calculate(batch_input)
-        print("ALL FOWARD LAYER: --- %s seconds ---" % (time.time() - start_time))
+        # print("ALL FOWARD LAYER: --- %s seconds ---" % (time.time() - start_time))
 
         # print(prof.key_averages().table(sort_by="cuda_time_total", row_limit=10))
 

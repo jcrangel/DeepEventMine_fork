@@ -6,7 +6,7 @@ from eval.evalEV import write_events
 from utils import utils
 import time
 
-def predict(model, result_dir, eval_dataloader, eval_data, g_entity_ids_, params):
+def predict(model, result_dir, eval_dataloader, eval_data, g_entity_ids_, params,write_files=True):
     mapping_id_tag = params['mappings']['nn_mapping']['id_tag_mapping']
 
     # store predicted entities
@@ -27,10 +27,10 @@ def predict(model, result_dir, eval_dataloader, eval_data, g_entity_ids_, params
     all_ner_preds, all_ner_golds, all_ner_terms = [], [], []
 
     is_eval_ev = False
-    start_time = time.time()
     for step, batch in enumerate(
             tqdm(eval_dataloader, desc="Iteration", leave=False)
     ):
+        start_time = time.time()
         eval_data_ids = batch
         tensors = utils.get_tensors(eval_data_ids, eval_data, params)
 
@@ -153,30 +153,31 @@ def predict(model, result_dir, eval_dataloader, eval_data, g_entity_ids_, params
         if params['gpu'] >= 0:
             torch.cuda.empty_cache()
 
-        print("PREDICT LOOP: --- %s seconds ---" % (time.time() - start_time))
+        # print("PREDICT LOOP: --- %s seconds ---" % (time.time() - start_time))
 
     file_time = time.time()        
-    # write entity and relation prediction
-    _ = write_entity_relations(
-        result_dir=result_dir,
-        fidss=fidss,
-        ent_anns=ent_anns,
-        rel_anns=rel_anns,
-        params=params
-    )
+    if write_files:
+        # write entity and relation prediction
+        _ = write_entity_relations(
+            result_dir=result_dir,
+            fidss=fidss,
+            ent_anns=ent_anns,
+            rel_anns=rel_anns,
+            params=params
+        )
 
-    if is_eval_ev > 0:
-        write_events(fids=fidss,
-                     all_ent_preds=ent_preds,
-                     all_words=wordss,
-                     all_offsets=offsetss,
-                     all_span_terms=all_ner_terms,
-                     all_span_indices=span_indicess,
-                     all_sub_to_words=sub_to_wordss,
-                     all_ev_preds=ev_preds,
-                     g_entity_ids_=g_entity_ids_,
-                     params=params,
-                     result_dir=result_dir)
+        if is_eval_ev > 0:
+            write_events(fids=fidss,
+                        all_ent_preds=ent_preds,
+                        all_words=wordss,
+                        all_offsets=offsetss,
+                        all_span_terms=all_ner_terms,
+                        all_span_indices=span_indicess,
+                        all_sub_to_words=sub_to_wordss,
+                        all_ev_preds=ev_preds,
+                        g_entity_ids_=g_entity_ids_,
+                        params=params,
+                        result_dir=result_dir)
 
-    print("(FILE writing): --- %s seconds ---" % (time.time() - file_time))
+    # print("(FILE writing): --- %s seconds ---" % (time.time() - file_time))
 

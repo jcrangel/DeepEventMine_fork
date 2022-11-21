@@ -286,7 +286,7 @@ class NestedNERModel(BertPreTrainedModel):
 
         all_aligned_preds = all_preds.detach().cpu().numpy()
         
-        print("NER LOOP: --- %s seconds ---" % (time.time() - start_time))
+        # print("NER LOOP: --- %s seconds ---" % (time.time() - start_time))
 
         return (
             all_aligned_preds,

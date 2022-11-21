@@ -1,3 +1,4 @@
+import sys
 import os
 import random
 import pickle
@@ -13,12 +14,16 @@ from loader.prepNN import prep4nn
 from utils import utils
 from torch.profiler import profile, record_function, ProfilerActivity
 
+from memory_profiler import profile
 
+@profile
 def main():
     # read predict config
     # set config path by command line
     inp_args = utils._parsing()
     config_path = getattr(inp_args, 'yaml')
+    # config_path = '/home/julio/repos/event_finder/DeepEventMine_fork/experiments/pubmed100/configs/predict-pubmed-100.yaml'
+
 
     # set config path manually
     # config_path = 'configs/debug.yaml'
@@ -69,17 +74,31 @@ def main():
     parameters['a2_entities'] = pred_params['a2_entities']
     parameters['json_file'] = pred_params['json_file']
 
-    # process data
+    print(' Processing data')
     test_data = prepdata.prep_input_data(
         pred_params['test_data'], parameters, json_file=parameters['json_file'])
-    nntest_data, test_dataloader = read_test_data(test_data, parameters)
+    # nntest_data, test_dataloader = read_test_data(test_data, parameters)
+    test = prep4nn.data2network(test_data, 'predict', parameters)
 
-    # model
+    if len(test) == 0:
+        raise ValueError("Test set empty.")
+    #leak?    
+    nntest_data = prep4nn.torch_data_2_network(
+        cdata2network=test, params=parameters, do_get_nn_data=True)
+    te_data_size = len(nntest_data['nn_data']['ids'])
+
+    test_data_ids = TensorDataset(torch.arange(te_data_size))
+    test_sampler = SequentialSampler(test_data_ids)
+    test_dataloader = DataLoader(
+        test_data_ids, sampler=test_sampler, batch_size=parameters['batchsize'])
+
+    print('Loading mode')
     deepee_model = deepEM.DeepEM(parameters)
 
     model_path = pred_params['model_path']
 
     # Load all models
+    print('Loading checkpoints mode')
     utils.handle_checkpoints(model=deepee_model,
                              checkpoint_dir=model_path,
                              params={
@@ -96,12 +115,14 @@ def main():
 
 
 
+    print('predicting')
     predict(model=deepee_model,
             result_dir=result_dir,
             eval_dataloader=test_dataloader,
             eval_data=nntest_data,
             g_entity_ids_=test_data['g_entity_ids_'],
-            params=parameters)
+            params=parameters,
+            write_files = False)
 
     # print(prof.key_averages().table(sort_by="cuda_time_total", row_limit=10))
 
@@ -112,20 +133,23 @@ def main():
 
     # prof.export_chrome_trace("trace.json")
 
-
+# @profile
 def read_test_data(test_data, params):
+
     test = prep4nn.data2network(test_data, 'predict', params)
 
     if len(test) == 0:
         raise ValueError("Test set empty.")
 
-    test_data = prep4nn.torch_data_2_network(cdata2network=test, params=params, do_get_nn_data=True)
-    te_data_size = len(test_data['nn_data']['ids'])
+    nntest_data = prep4nn.torch_data_2_network(cdata2network=test, params=params, do_get_nn_data=True)
+    te_data_size = len(nntest_data['nn_data']['ids'])
 
     test_data_ids = TensorDataset(torch.arange(te_data_size))
     test_sampler = SequentialSampler(test_data_ids)
     test_dataloader = DataLoader(test_data_ids, sampler=test_sampler, batch_size=params['batchsize'])
-    return test_data, test_dataloader
+    return nntest_data, test_dataloader
+
+
 
 
 if __name__ == '__main__':
