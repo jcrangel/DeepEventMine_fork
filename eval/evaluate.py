@@ -84,11 +84,15 @@ def predict(model, result_dir, eval_dataloader, eval_data, g_entity_ids_, params
                     for label_id in label_ids
                 ]
             )
-
-            pred_entities = []
+            nn_span = nn_span_indices.detach().cpu().numpy()
+            pred_entities = []  # nn_span_indice :orch.Size([128, 2450, 2]), sentence_idx:0,span_id:0
             for span_id, ner_pred_id in enumerate(ner_pred):
-                span_start, span_end = nn_span_indices[sentence_idx][span_id]
-                span_start, span_end = span_start.item(), span_end.item()
+                span_start, span_end = nn_span[sentence_idx][span_id]
+                # indx = torch.tensor([sentence_idx, span_id],
+                #                     device=0).unsqueeze(-1)
+                # span_start, span_end = torch.gather(nn_span_indices,1,indx)
+
+                # span_start, span_end = span_start.item(), span_end.item()
                 if (ner_pred_id > 0
                         and span_start in sub_to_words[sentence_idx]
                         and span_end in sub_to_words[sentence_idx]
@@ -146,8 +150,8 @@ def predict(model, result_dir, eval_dataloader, eval_data, g_entity_ids_, params
             span_indicess.append([])
 
         # Clear GPU unused RAM:
-        # if params['gpu'] >= 0:
-        #     torch.cuda.empty_cache()
+        if params['gpu'] >= 0:
+            torch.cuda.empty_cache()
 
         print("PREDICT LOOP: --- %s seconds ---" % (time.time() - start_time))
 

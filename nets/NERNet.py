@@ -244,17 +244,31 @@ class NestedNERModel(BertPreTrainedModel):
         all_preds = torch.gather(all_preds, dim=1, index=all_preds_top_indices)
 
         start_time = time.time()
-        all_preds = all_preds.detach().cpu().numpy()
-        all_golds = all_golds.detach().cpu().numpy()
+        
+        #Computing trigger_indices in the GPU
+        indices_t = torch.tensor(
+            self.params['mappings']['nn_mapping']['trTypes_Ids'],dtype=int,device=0)
+        
+        index0 = torch.zeros([all_preds.shape[0], 1], dtype=int,device=0)
+        #We get all indices where al_preds is equal to some element of indices_t
+        #Only search on the first dimention of all_preds
+        trigger_indices = (all_preds.gather(1, index0)  == indices_t
+                                ).nonzero(as_tuple=False)
+        index2= torch.zeros([trigger_indices.shape[0],1],dtype=int,device=0)
+        trigger_indices = trigger_indices.gather(1, index2).squeeze(1).tolist()
+        ##
+
+        all_preds = all_preds.detach().cpu().numpy()  # torch.Size([28845, 2]) int
+        all_golds = all_golds.detach().cpu().numpy()  # torch.Size([28845, 2]) int
 
         all_aligned_preds = []
-        trigger_indices = []
+        # trigger_indices = [] #[,213,123,51232,222] 150
         for idx, (preds, golds) in enumerate(zip(all_preds, all_golds)):
             # check trigger in preds
-            for pred in preds:
-                if pred in self.params['mappings']['nn_mapping']['trTypes_Ids']:
-                    trigger_indices.append(idx)
-                    break
+            # for pred in preds:
+            #     if pred in self.params['mappings']['nn_mapping']['trTypes_Ids']:
+            #         trigger_indices.append(idx)
+            #         break
             aligned_preds = []
             pred_set = set(preds) - {0}
             gold_set = set(golds) - {0}
@@ -266,8 +280,8 @@ class NestedNERModel(BertPreTrainedModel):
                 else:
                     aligned_preds.append(diff.pop() if diff else 0)
             all_aligned_preds.append(aligned_preds)
-
-        all_aligned_preds = np.array(all_aligned_preds)
+        #(47653, 2)
+        all_aligned_preds = np.array(all_aligned_preds) # [[0,0],..,[46,0]]
         print("NER LOOP: --- %s seconds ---" % (time.time() - start_time))
 
         return (
