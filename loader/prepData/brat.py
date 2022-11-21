@@ -8,9 +8,9 @@ from collections import OrderedDict
 def brat_loader(files_fold, params):
     file_list = glob.glob(files_fold + '*' + '.txt')
 
-    entities = OrderedDict()
+    entities = dict()
 
-    sentences = OrderedDict()
+    sentences = dict()
 
     for filef in sorted(file_list):
         if filef.split("/")[-1].startswith("."):
@@ -19,11 +19,11 @@ def brat_loader(files_fold, params):
         filename = filef.split('/')[-1].split('.txt')[0]
         ffolder = '/'.join(filef.split('/')[:-1]) + '/'
 
-        fentities = OrderedDict()
+        fentities = dict()
 
         idsT = []
         typesT = []
-        infoT = OrderedDict()
+        infoT = dict()
         termsT = []
 
         with open(ffolder + filename + '.ann', encoding="UTF-8") as infile:
@@ -40,7 +40,7 @@ def brat_loader(files_fold, params):
 
                     idsT.append(eid)
                     typesT.append(etype)
-                    ent_info = OrderedDict()
+                    ent_info = dict()
                     ent_info['id'] = eid
                     ent_info['type'] = etype
                     ent_info['pos1'] = pos1

@@ -7,7 +7,7 @@ import re
 
 
 def process_etypes(entities0):
-    entities1 = OrderedDict()
+    entities1 = dict()
     etypes_ = []
     arguments = []
     for pmid in entities0:
@@ -33,7 +33,7 @@ def process_tags(entities1):
 
     tags = []
 
-    tags2types = OrderedDict()
+    tags2types = dict()
     tags2types['O'] = 'O'
     for type in typesT:
         btag = 'B-' + type
@@ -43,7 +43,7 @@ def process_tags(entities1):
         tags2types[btag] = type
         tags2types[itag] = type
 
-    tags0 = OrderedDict()
+    tags0 = dict()
     tags0['types'] = typesT
     tags0['typesT'] = typesT
     tags0['tags'] = tags
@@ -150,7 +150,7 @@ def spliter(line, _len=len):
 def process_entities(entities1, sentences1, params, dirpath):
     entities0 = entities1['pmids']
 
-    input0 = OrderedDict()
+    input0 = dict()
 
     sentences0 = sentences1['doc_data']
     levels = []
@@ -192,7 +192,7 @@ def process_entities(entities1, sentences1, params, dirpath):
                 eid = t1[0]
                 eids.append(eid)
             sentence['eids'] = eids
-            readable_ents = OrderedDict()
+            readable_ents = dict()
             for eid in eids:
                 if eid in entities['data']:
                     readable_ents[eid] = entities['data'][eid]

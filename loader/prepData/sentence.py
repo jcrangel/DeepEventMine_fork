@@ -33,7 +33,7 @@ def prep_sentence_offsets(sentences0):
     sentences_ = []
     sent_words = []
     words_ = []
-    sentences1 = OrderedDict()
+    sentences1 = dict()
     sent_lens = []
     for pmid in sentences0:
         sentences = sentences0[pmid]
@@ -57,7 +57,7 @@ def prep_sentence_offsets(sentences0):
 
     max_sent_len = np.max(sent_lens)
 
-    sentences2 = OrderedDict()
+    sentences2 = dict()
     sentences2['doc_data'] = sentences1
     sentences2['sentences'] = sentences_
     sentences2['sent_words'] = sent_words
@@ -75,23 +75,23 @@ def process_input(input0):
             eids = sentence['eids']
             readable_ents = sentence['readable_ents']
 
-            readable_entsA = OrderedDict()
-            read_temp = OrderedDict()
+            readable_entsA = dict()
+            read_temp = dict()
 
             for ee1 in eids:
                 if ee1.startswith('TR'):
                     readable_entsA[ee1] = readable_ents[ee1]
                 else:
                     read_temp[ee1] = readable_ents[ee1]
-            readable_entsB = OrderedDict()
+            readable_entsB = dict()
             readable_entsB.update(read_temp)
             readable_entsB.update(readable_entsA)
 
-            r_idxs = OrderedDict()
+            r_idxs = dict()
 
             sentence['idx'] = r_idxs
 
-            sent_evs = OrderedDict()
+            sent_evs = dict()
 
             sentence['readable_ev'] = sent_evs
 
@@ -99,7 +99,7 @@ def process_input(input0):
 
             sentence['trigger_ev'] = trigger_ev
 
-    input1 = OrderedDict()
+    input1 = dict()
     for pmid in input0:
         for sid, sentence in enumerate(input0[pmid]):
             sent_id = pmid + ':' + 'sent' + str(sid)

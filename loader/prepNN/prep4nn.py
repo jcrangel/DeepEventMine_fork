@@ -42,7 +42,7 @@ def data2network(data_struct, data_type, params):
             sentence_data, words, params, tokenizer)
 
         # return
-        sentence_vector = OrderedDict()
+        sentence_vector = dict()
         sentence_vector['fid'] = fid
         sentence_vector['ents'] = ents
         sentence_vector['word_ids'] = word_ids

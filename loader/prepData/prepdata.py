@@ -1,6 +1,7 @@
 """Load data from brat format and process for entity"""
 
 from collections import OrderedDict
+from html import entities
 
 from loader.prepData.brat import brat_loader
 from loader.prepData.sentence import prep_sentence_offsets, process_input
@@ -40,7 +41,7 @@ def prep_input_data(files_fold, params,json_file=None):
             print(doc_name, sorted(diff, key=lambda _id: int(_id.replace("T", ""))))
 
     # entity indices
-    g_entity_ids_ = OrderedDict()
+    g_entity_ids_ = dict()
     for fid, fdata in entities0.items():
         # get max entity id
         eid_ = [eid for eid in fdata['ids'] if not eid.startswith('TR')]
@@ -66,6 +67,6 @@ def gen_sent_entities_json(jsonf):
     entities = {pmid: dict([('data', dict([])), ('types', []), ('counted_types', {}), ('ids', []), ('terms', [])])
                 for pmid,valus in sentences.items()
     }
-
+    # entities = {}
     return entities,sentences
     

@@ -99,11 +99,11 @@ def parse_standoff_file(standoff_file, text_file, encoding=None):
     assert os.path.exists(standoff_file), "Standoff file not found: " + standoff_file
     assert os.path.exists(text_file), "Text file not found: " + text_file
 
-    entities = OrderedDict()
-    relations = OrderedDict()
-    events = OrderedDict()
-    modalities = OrderedDict()
-    attributes = OrderedDict()
+    entities = dict()
+    relations = dict()
+    events = dict()
+    modalities = dict()
+    attributes = dict()
     equivalences = []
 
     # Using reference for double-check
@@ -342,11 +342,11 @@ def correct_sentence_boundaries_ace05(doc):
 def parse_xml_file_ace05(xml_file, encoding=None):
     assert os.path.exists(xml_file), "XML file not found: " + xml_file
 
-    entities = OrderedDict()
-    relations = OrderedDict()
-    events = OrderedDict()
-    modalities = OrderedDict()
-    attributes = OrderedDict()
+    entities = dict()
+    relations = dict()
+    events = dict()
+    modalities = dict()
+    attributes = dict()
     equivalences = []
 
     markup = BeautifulSoup(read_file(xml_file), "lxml-xml")
@@ -478,7 +478,7 @@ def build_subtoken_map(corpus_name, corpus_dir, output_dir):
     subtoken_map = defaultdict(list)
 
     for fn in glob(os.path.join(corpus_dir, "**/*.txt"), recursive=True):
-        entities = OrderedDict()
+        entities = dict()
 
         basename, _ = os.path.splitext(fn)
 
@@ -542,7 +542,7 @@ def build_subtoken_map(corpus_name, corpus_dir, output_dir):
         for k, v in read_json(subtoken_map_fn).items():
             subtoken_map[k].extend(v)
 
-    ordered_subtoken_map = OrderedDict()
+    ordered_subtoken_map = dict()
 
     for k in sorted(subtoken_map, key=len):
         ordered_subtoken_map[k] = sorted(set(subtoken_map[k]))
@@ -585,11 +585,11 @@ def convert(corpus_name, corpus_dir, output_dir):
     for fn in glob(os.path.join(corpus_dir, "**/*.txt"), recursive=True):
         print(">> Processing: " + fn)
 
-        entities = OrderedDict()
-        relations = OrderedDict()
-        events = OrderedDict()
-        modalities = OrderedDict()
-        attributes = OrderedDict()
+        entities = dict()
+        relations = dict()
+        events = dict()
+        modalities = dict()
+        attributes = dict()
         equivalences = []
 
         a1_entities = None
