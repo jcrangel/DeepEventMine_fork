@@ -11,8 +11,9 @@ from nets import deepEM
 from loader.prepData import prepdata
 from loader.prepNN import prep4nn
 from utils import utils
+from memory_profiler import profile
 
-
+@profile
 def main():
     # read predict config
     # set config path by command line

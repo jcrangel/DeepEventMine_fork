@@ -553,7 +553,7 @@ class BertPreTrainedModel(nn.Module):
                     . `model.chkpt` a TensorFlow checkpoint
             from_tf: should we load the weights from a locally saved TensorFlow checkpoint
             cache_dir: an optional path to a folder in which the pre-trained models will be cached.
-            state_dict: an optional state dictionnary (collections.OrderedDict object) to use instead of Google pre-trained models
+            state_dict: an optional state dictionnary (dict object) to use instead of Google pre-trained models
             *inputs, **kwargs: additional input for the specific Bert class
                 (ex: num_labels for BertForSequenceClassification)
         """

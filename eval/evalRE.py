@@ -203,7 +203,7 @@ def get_entity_attrs(e_span_indice, words, offsets, sub_to_words):
 
 def mapping_entity_id(entities_):
     eid = 1
-    enid_mapping = collections.OrderedDict()
+    enid_mapping = dict()
     en_preds_out_ = []
 
     # create mapping for entity id first

@@ -48,7 +48,7 @@ VOCAB_NAME = 'vocab.txt'
 
 def load_vocab(vocab_file):
     """Loads a vocabulary file into a dictionary."""
-    vocab = collections.OrderedDict()
+    vocab = {}
     index = 0
     with open(vocab_file, "r", encoding="utf-8") as reader:
         while True:
@@ -94,7 +94,7 @@ class BertTokenizer(object):
                 "Can't find a vocabulary file at path '{}'. To load the vocabulary from a Google pretrained "
                 "model use `tokenizer = BertTokenizer.from_pretrained(PRETRAINED_MODEL_NAME)`".format(vocab_file))
         self.vocab = load_vocab(vocab_file)
-        self.ids_to_tokens = collections.OrderedDict(
+        self.ids_to_tokens = dict(
             [(ids, tok) for tok, ids in self.vocab.items()])
         self.do_basic_tokenize = do_basic_tokenize
         if do_basic_tokenize:

@@ -47,9 +47,9 @@ def generate_entities(fids, all_e_preds, all_words, all_offsets, all_span_terms,
                     preds[(xi, (xb, xx))] = [e_term, e_type_id, e_offset, e_words]
             pred_ents_[fid].append(preds)
 
-    pred_ents = collections.OrderedDict()
+    pred_ents = dict()
     for fid in pred_ents_:
-        pred_ents[fid] = collections.OrderedDict()
+        pred_ents[fid] = dict()
         for preds in pred_ents_[fid]:
             for trid, ent in preds.items():
                 pred_ents[fid][trid] = ent
@@ -69,7 +69,7 @@ def generate_events(fids, all_ev_preds, params):
         acc_evid = 0
 
         # store event ids
-        evids_ = collections.OrderedDict()
+        evids_ = dict()
 
         for level, ev_preds_ in enumerate(ev_preds_levels_):
 
@@ -112,7 +112,7 @@ def generate_events(fids, all_ev_preds, params):
                     args_data = []
 
                     # to check duplicate relation type
-                    dup_rtypes = collections.OrderedDict()
+                    dup_rtypes = dict()
 
                     for argid, a2id in enumerate(a2ids):
 
@@ -162,7 +162,7 @@ def generate_events(fids, all_ev_preds, params):
 # generate event output
 def generate_ev_output(pred_ents, pred_evs, params):
     # store output
-    preds_output = collections.OrderedDict()
+    preds_output = dict()
 
     # store event id to check nested event
     added_evid_list = []
@@ -302,7 +302,7 @@ def mapping_entity_id(en_preds_, g_entity_ids_, rev_type_map, params):
         eid = 1
 
     # mapping
-    enid_mapping = collections.OrderedDict()
+    enid_mapping = dict()
     en_preds_out_ = []
 
     # entity in a2
@@ -350,7 +350,7 @@ def write_ev_2file(pred_output, pred_ents, result_dir, g_entity_ids_, params):
     rev_type_map = params['mappings']['rev_type_map']
 
     # entity id mapping
-    # feid_mapping = collections.OrderedDict()
+    # feid_mapping = dict()
 
     if not os.path.exists(a2dir):
         os.makedirs(a2dir)
@@ -428,7 +428,7 @@ def write_ev_2file(pred_output, pred_ents, result_dir, g_entity_ids_, params):
         f_evid = 0
 
         # mapping event id to incremental id
-        f_evid_map = collections.OrderedDict()
+        f_evid_map = dict()
 
         # store modality
         mod_list = []

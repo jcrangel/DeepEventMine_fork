@@ -584,7 +584,7 @@ class EV_Generator(nn.Module):
         ev_candidates = []
 
         # store relation id and entity argument id for each trigger
-        args_triggers = collections.OrderedDict()
+        args_triggers = dict()
 
         # create candidates for each trigger
         for trid, cand_data in ev_cand_triggers.items():
@@ -716,7 +716,7 @@ class EV_Generator(nn.Module):
         ev_candidates = []
 
         # store relation id and entity argument id for each trigger
-        args_triggers = collections.OrderedDict()
+        args_triggers = dict()
 
         # create candidates for each trigger
         for trid, cand_data in ev_cand_triggers.items():

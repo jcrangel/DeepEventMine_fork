@@ -112,7 +112,7 @@ class EVModel(nn.Module):
                 2. a list of argument embedding: (relation emb, relation type emb, argument entity emb)
         """
 
-        arg_embed_triggers = collections.OrderedDict()
+        arg_embed_triggers = dict()
 
         for trid, arg_data in ev_arg_ids4nn.items():
             tr_embeds = ent_embeds[trid]
@@ -237,7 +237,7 @@ class EVModel(nn.Module):
         """
 
         # store a list of embeds for each trigger: trigger embeds, relation embeds, relation type embeds
-        arg_embed_triggers = collections.OrderedDict()
+        arg_embed_triggers = dict()
 
         for trid, arg_data in ev_arg_ids4nn.items():
             tr_embeds = ent_embeds[trid]
@@ -261,7 +261,7 @@ class EVModel(nn.Module):
                 if len(ev_argids) > 0:
 
                     # store event argument embeds with key is event id
-                    ev_arg_embeds = collections.OrderedDict()
+                    ev_arg_embeds = dict()
 
                     for pid in ev_argids:
                         # pid: (level, positive_event_id)

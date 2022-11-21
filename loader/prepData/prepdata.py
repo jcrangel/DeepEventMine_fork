@@ -59,12 +59,12 @@ def prep_input_data(files_fold, params,json_file=None):
 def gen_sent_entities_json(jsonf):
 
     with open(jsonf) as json_file:
-        data = json.load(json_file)
+        sentences = json.load(json_file)
 
-    sentences = OrderedDict(data)
+    # sentences = dict(data)
 
-    entities = {pmid: OrderedDict([('data', OrderedDict([])), ('types', []), ('counted_types', {}), ('ids', []), ('terms', [])])
-                for pmid,valus in data.items()
+    entities = {pmid: dict([('data', dict([])), ('types', []), ('counted_types', {}), ('ids', []), ('terms', [])])
+                for pmid,valus in sentences.items()
     }
 
     return entities,sentences
