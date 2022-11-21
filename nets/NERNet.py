@@ -245,7 +245,7 @@ class NestedNERModel(BertPreTrainedModel):
 
         start_time = time.time()
         
-        #Computing trigger_indices in the GPU
+        ## Computing trigger_indices in the GPU
         indices_t = torch.tensor(
             self.params['mappings']['nn_mapping']['trTypes_Ids'],dtype=int,device=0)
         
@@ -258,30 +258,34 @@ class NestedNERModel(BertPreTrainedModel):
         trigger_indices = trigger_indices.gather(1, index2).squeeze(1).tolist()
         ##
 
-        all_preds = all_preds.detach().cpu().numpy()  # torch.Size([28845, 2]) int
+        #It seems that all_aligned_preds just repeats all_preds
+        # all_preds = all_preds.detach().cpu().numpy()  # torch.Size([28845, 2]) int
         all_golds = all_golds.detach().cpu().numpy()  # torch.Size([28845, 2]) int
 
-        all_aligned_preds = []
-        # trigger_indices = [] #[,213,123,51232,222] 150
-        for idx, (preds, golds) in enumerate(zip(all_preds, all_golds)):
-            # check trigger in preds
-            # for pred in preds:
-            #     if pred in self.params['mappings']['nn_mapping']['trTypes_Ids']:
-            #         trigger_indices.append(idx)
-            #         break
-            aligned_preds = []
-            pred_set = set(preds) - {0}
-            gold_set = set(golds) - {0}
-            shared = pred_set & gold_set
-            diff = pred_set - shared
-            for gold in golds:
-                if gold in shared:
-                    aligned_preds.append(gold)
-                else:
-                    aligned_preds.append(diff.pop() if diff else 0)
-            all_aligned_preds.append(aligned_preds)
-        #(47653, 2)
-        all_aligned_preds = np.array(all_aligned_preds) # [[0,0],..,[46,0]]
+        # all_aligned_preds = []
+        # # trigger_indices = [] #[,213,123,51232,222] 150, preds,golds shalpe (2,)
+        # for idx, (preds, golds) in enumerate(zip(all_preds, all_golds)):
+        #     # check trigger in preds
+        #     # for pred in preds:
+        #     #     if pred in self.params['mappings']['nn_mapping']['trTypes_Ids']:
+        #     #         trigger_indices.append(idx)
+        #     #         break
+        #     aligned_preds = []
+        #     pred_set = set(preds) - {0}
+        #     gold_set = set(golds) - {0}
+        #     shared = pred_set & gold_set
+        #     diff = pred_set - shared
+        #     for gold in golds:
+        #         if gold in shared:
+        #             aligned_preds.append(gold)
+        #         else:
+        #             aligned_preds.append(diff.pop() if diff else 0)
+        #     all_aligned_preds.append(aligned_preds)
+        # #([28845, 2])
+        # all_aligned_preds = np.array(all_aligned_preds) # [[0,0],..,[46,0]]
+
+        all_aligned_preds = all_preds.detach().cpu().numpy()
+        
         print("NER LOOP: --- %s seconds ---" % (time.time() - start_time))
 
         return (
