@@ -1,3 +1,4 @@
+import gc
 import sys
 import os
 import random
@@ -92,6 +93,7 @@ def main():
     test_dataloader = DataLoader(
         test_data_ids, sampler=test_sampler, batch_size=parameters['batchsize'])
 
+
     print('Loading mode')
     deepee_model = deepEM.DeepEM(parameters)
 
@@ -122,7 +124,7 @@ def main():
             eval_data=nntest_data,
             g_entity_ids_=test_data['g_entity_ids_'],
             params=parameters,
-            write_files = False)
+            write_files = True)
 
     # print(prof.key_averages().table(sort_by="cuda_time_total", row_limit=10))
 

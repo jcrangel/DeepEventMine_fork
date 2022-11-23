@@ -242,7 +242,9 @@ def process_entities(entities1, sentences1, params, dirpath):
     for pmid in sentences1['doc_data']:
         in_sentences = sentences1['doc_data'][pmid]
         out_sentences = []
-        label_count = len(in_sentences[0]['tags'])
+        if len(in_sentences) <= 0:
+            continue
+        label_count = len(in_sentences[0]['tags'])##!!
         pad_level = max_nest_level - label_count
 
         for xx, sentence in enumerate(in_sentences):

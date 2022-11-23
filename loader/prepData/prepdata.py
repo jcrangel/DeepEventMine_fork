@@ -22,7 +22,7 @@ def prep_input_data(files_fold, params,json_file=None):
     # entity
     entities1 = process_etypes(entities0)  # all entity types
     terms0 = process_tags(entities1)  # terms, offset, tags, etypes
-    input0 = process_entities(entities1, sentences1, params, files_fold)
+    input0 = process_entities(entities1, sentences1, params, files_fold) ##!!
 
     # prepare for training batch data for each sentence
     input1 = process_input(input0)
