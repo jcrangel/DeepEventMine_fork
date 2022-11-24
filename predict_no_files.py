@@ -143,7 +143,7 @@ def read_test_data(test_data, params):
     if len(test) == 0:
         raise ValueError("Test set empty.")
 
-    nntest_data = prep4nn.torch_data_2_network(cdata2network=test, params=params, do_get_nn_data=True)
+    nntest_data = prep4nn.torch_data_2_network(cdata2network=test, params=params, do_get_nn_data=False)
     te_data_size = len(nntest_data['nn_data']['ids'])
 
     test_data_ids = TensorDataset(torch.arange(te_data_size))
