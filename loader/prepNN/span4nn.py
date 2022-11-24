@@ -73,6 +73,8 @@ def get_batch_data(fid, entities, terms, valid_starts, sw_sentence, tokenizer, p
     trigger_masks = []
     span_terms = Term({}, {}, {})
 
+    # quickfix for mlb slow processing
+    __span_label = mlb.transform([[]])[-1]
     for span_start, span_end in zip(
             span_starts.flatten(), span_ends.flatten()
     ):
@@ -121,8 +123,13 @@ def get_batch_data(fid, entities, terms, valid_starts, sw_sentence, tokenizer, p
                 term_label = params['mappings']['nn_mapping']['id_tag_mapping'][span_label[0]]
                 span_terms.id2label[span_index] = term_label
             #TODO Very slow
-            span_label = mlb.transform([span_label])[-1]
-
+            # if len(span_label)>0:
+            #This is never hit  span_label=[] always? maybe is used on training time?
+            #     print("SPANNNNN",span_label)
+            # quickfix for mlb slow processing
+            # span_label = mlb.transform([span_label])[-1]
+            span_label = __span_label
+            
             span_indices += [(span_start, span_end)] * params["ner_label_limit"]
             span_labels.append(span_label)
             span_labels_match_rel.append(span_label_match_rel)

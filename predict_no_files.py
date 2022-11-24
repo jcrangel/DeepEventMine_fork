@@ -3,6 +3,7 @@ import sys
 import os
 import random
 import pickle
+import time
 import numpy as np
 import torch
 from torch.utils.data import TensorDataset, DataLoader, SequentialSampler
@@ -83,9 +84,11 @@ def main():
 
     if len(test) == 0:
         raise ValueError("Test set empty.")
-    #leak?    
+    start_time = time.time()
     nntest_data = prep4nn.torch_data_2_network(
         cdata2network=test, params=parameters, do_get_nn_data=True)
+    print("torch_data_2_network: --- %s seconds ---" % (time.time() - start_time))
+
     te_data_size = len(nntest_data['nn_data']['ids'])
 
     test_data_ids = TensorDataset(torch.arange(te_data_size))
