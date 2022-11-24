@@ -30,6 +30,7 @@ def get_span_index(
     return span_index * limit + index
 
 
+# @profile
 def get_batch_data(fid, entities, terms, valid_starts, sw_sentence, tokenizer, params):
     mlb = params["mappings"]["nn_mapping"]["mlb"]
 
@@ -119,7 +120,7 @@ def get_batch_data(fid, entities, terms, valid_starts, sw_sentence, tokenizer, p
                 # add entity type
                 term_label = params['mappings']['nn_mapping']['id_tag_mapping'][span_label[0]]
                 span_terms.id2label[span_index] = term_label
-
+            #TODO Very slow
             span_label = mlb.transform([span_label])[-1]
 
             span_indices += [(span_start, span_end)] * params["ner_label_limit"]
@@ -150,7 +151,7 @@ def get_nn_data(fids, entitiess, termss, valid_startss, sw_sentences, tokenizer,
         entities = entitiess[idx]
         terms = termss[idx]
         valid_starts = valid_startss[idx]
-
+        #TODO SLOW
         sample = get_batch_data(fid, entities, terms, valid_starts, sw_sentence, tokenizer,
                                 params)
         samples.append(sample)

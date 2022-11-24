@@ -104,6 +104,7 @@ def torch_data_2_network(cdata2network, params, do_get_nn_data):
                                                            params["mappings"]["nn_mapping"]["num_triggers"]
 
     if do_get_nn_data:
+        #TODO Slow
         nn_data = get_nn_data(fids, entitiess, termss, valid_startss, sw_sentences,
                               tokenizer, params)
 
