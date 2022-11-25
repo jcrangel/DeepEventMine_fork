@@ -53,8 +53,8 @@ class NestedNERModel(BertPreTrainedModel):
         embeddings, sentence_embedding = self.bert(
             all_ids, attention_mask=all_attention_masks, output_all_encoded_layers=False
         )  # (B, S, H) (B, 128, 768)
-
-        flattened_token_masks = all_token_masks.flatten()  # (B * S, )
+        #uint8 deprecated use bool
+        flattened_token_masks = all_token_masks.flatten().bool()  # (B * S, )
 
         flattened_embedding_indices = torch.arange(
             flattened_token_masks.size(0), device=device
