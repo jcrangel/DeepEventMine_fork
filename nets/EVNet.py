@@ -1,6 +1,7 @@
 """ Build the EVENT prediction network.
 
 """
+from DeepEventMine.nets.EVGen import EV_Generator
 import numpy as np
 import collections
 
@@ -18,7 +19,6 @@ def gelu(x):
     return 0.5 * x * (1 + torch.tanh(math.sqrt(math.pi / 2) * (x + 0.044715 * x ** 3)))
 
 
-from nets.EVGen import EV_Generator
 
 
 class EVModel(nn.Module):

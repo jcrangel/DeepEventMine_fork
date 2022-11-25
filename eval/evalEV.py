@@ -379,6 +379,7 @@ def write_ev_2file(pred_output, pred_ents, result_dir, g_entity_ids_, params):
             e_id = enid_mapping[e0_id]
 
             output = ''.join(
+                ### entities data
                 [e_id, '\t', rev_type_map[e_pred[1]], ' ', str(e_pred[2][0]), ' ', str(e_pred[2][1]), '\t',
                  e_pred[3], '\n'])
 
@@ -445,7 +446,7 @@ def write_ev_2file(pred_output, pred_ents, result_dir, g_entity_ids_, params):
                 f_evid += 1
                 evid_out = f_evid
                 f_evid_map[evid] = evid_out
-
+            ### Events data
             trid = event_[1][0]
             trid = enid_mapping[trid]
             typeEV = rev_type_map[event_[1][1]]

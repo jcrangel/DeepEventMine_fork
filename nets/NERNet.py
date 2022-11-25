@@ -3,7 +3,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 
-from bert.modeling import BertModel, BertPreTrainedModel
+from DeepEventMine.bert.modeling import BertModel, BertPreTrainedModel
 import time
 
 class NestedNERModel(BertPreTrainedModel):

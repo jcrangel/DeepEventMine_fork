@@ -2,7 +2,7 @@
 
 import collections
 
-from loader.prepData.entity import extract_entities, convert_to_sub_words
+from DeepEventMine.loader.prepData.entity import extract_entities, convert_to_sub_words
 
 
 def _elem2idx(list_of_elems, map_func):

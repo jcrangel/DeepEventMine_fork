@@ -3,17 +3,21 @@
 from collections import OrderedDict
 from html import entities
 
-from loader.prepData.brat import brat_loader
-from loader.prepData.sentence import prep_sentence_offsets, process_input
-from loader.prepData.entity import process_etypes, process_tags, process_entities
+from DeepEventMine.loader.prepData.brat import brat_loader
+from DeepEventMine.loader.prepData.sentence import prep_sentence_offsets, process_input
+from DeepEventMine.loader.prepData.entity import process_etypes, process_tags, process_entities
 import json
 
-def prep_input_data(files_fold, params,json_file=None):
+def prep_input_data(files_fold, params,sentences=None,json_file=None):
     # load data from *.ann files
-    if json_file is None:
-        entities0, sentences0 = brat_loader(files_fold, params)
-    else:
+    if sentences is not None:
+        sentences0 = sentences
+        entities0, _ = gen_sent_entities_json(sentences=sentences)
+
+    elif json_file is not None and sentences is None:
         entities0, sentences0 = gen_sent_entities_json(json_file)
+    else:
+        entities0, sentences0 = brat_loader(files_fold, params)
 
 
     # sentence offsets
@@ -57,10 +61,12 @@ def prep_input_data(files_fold, params,json_file=None):
             'g_entity_ids_': g_entity_ids_}
 
 
-def gen_sent_entities_json(jsonf):
+def gen_sent_entities_json(jsonf=None,sentences=None):
 
-    with open(jsonf) as json_file:
-        sentences = json.load(json_file)
+    if jsonf is not None:
+        with open(jsonf) as json_file:
+            sentences = json.load(json_file)
+
 
     # sentences = dict(data)
 

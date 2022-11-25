@@ -2,7 +2,7 @@ import torch
 import torch.nn.functional as f
 from torch import nn
 
-from eval.evalRE import calc_stats
+from DeepEventMine.eval.evalRE import calc_stats
 
 import math
 

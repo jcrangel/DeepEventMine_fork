@@ -5,10 +5,10 @@ import torch
 import torch.nn.functional as f
 from torch import nn
 
-from nets import EVNet
-from nets import RELNet
-from nets.NERNet import NestedNERModel
-from utils import utils
+from DeepEventMine.nets import EVNet
+from DeepEventMine.nets import RELNet
+from DeepEventMine.nets.NERNet import NestedNERModel
+from DeepEventMine.utils import utils
 # from torch.profiler import profile, record_function, ProfilerActivity
 import time
 

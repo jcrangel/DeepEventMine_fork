@@ -3,7 +3,7 @@ import os
 import collections
 from collections import defaultdict
 
-from utils.utils import write_lines
+from DeepEventMine.utils.utils import write_lines
 
 
 class SelectClass:

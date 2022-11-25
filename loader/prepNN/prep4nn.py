@@ -2,15 +2,15 @@
 
 from collections import OrderedDict
 
-from bert.tokenization import BertTokenizer
+from DeepEventMine.bert.tokenization import BertTokenizer
 from sklearn.preprocessing import MultiLabelBinarizer
 
-from loader.prepNN.sent2net import prep_sentences
-from loader.prepNN.ent2net import entity2network, _elem2idx
-from loader.prepNN.span4nn import get_nn_data
+from DeepEventMine.loader.prepNN.sent2net import prep_sentences
+from DeepEventMine.loader.prepNN.ent2net import entity2network, _elem2idx
+from DeepEventMine.loader.prepNN.span4nn import get_nn_data
 
 
-def data2network(data_struct, data_type, params):
+def data2network(data_struct, data_type, params,tokenizer=None):
     # input
     sent_words = data_struct['sentences']
 
@@ -22,9 +22,10 @@ def data2network(data_struct, data_type, params):
     all_sentences = []
 
     # nner: Using subwords:
-    tokenizer = BertTokenizer.from_pretrained(
-        params['bert_model'], do_lower_case=False
-    )
+    if tokenizer is None:
+        tokenizer = BertTokenizer.from_pretrained(
+            params['bert_model'], do_lower_case=False
+        )
 
     for xx, sid in enumerate(data_struct['input']):
         # input
@@ -66,7 +67,7 @@ def data2network(data_struct, data_type, params):
     return all_sentences
 
 
-def torch_data_2_network(cdata2network, params, do_get_nn_data):
+def torch_data_2_network(cdata2network, params, do_get_nn_data,tokenizer=None):
     """ Convert object-type data to torch.tensor type data, aim to use with Pytorch
     """
     etypes = [data['etypes2'] for data in cdata2network]
@@ -82,10 +83,11 @@ def torch_data_2_network(cdata2network, params, do_get_nn_data):
     offsetss = [data['offsets'] for data in cdata2network]
     sub_to_words = [data['sub_to_word'] for data in cdata2network]
     subwords = [data['subwords'] for data in cdata2network]
-
-    tokenizer = BertTokenizer.from_pretrained(
-        params['bert_model'], do_lower_case=False
-    )
+    
+    if tokenizer is None:
+        tokenizer = BertTokenizer.from_pretrained(
+            params['bert_model'], do_lower_case=False
+        )
 
     # User-defined data
     if not params["predict"]:

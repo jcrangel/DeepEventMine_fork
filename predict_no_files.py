@@ -76,28 +76,7 @@ def main():
     parameters['a2_entities'] = pred_params['a2_entities']
     parameters['json_file'] = pred_params['json_file']
 
-    print(' Processing data')
-    test_data = prepdata.prep_input_data(
-        pred_params['test_data'], parameters, json_file=parameters['json_file'])
-    # nntest_data, test_dataloader = read_test_data(test_data, parameters)
-    test = prep4nn.data2network(test_data, 'predict', parameters)
-
-    if len(test) == 0:
-        raise ValueError("Test set empty.")
-    start_time = time.time()
-    nntest_data = prep4nn.torch_data_2_network(
-        cdata2network=test, params=parameters, do_get_nn_data=True)
-    print("torch_data_2_network: --- %s seconds ---" % (time.time() - start_time))
-
-    te_data_size = len(nntest_data['nn_data']['ids'])
-
-    test_data_ids = TensorDataset(torch.arange(te_data_size))
-    test_sampler = SequentialSampler(test_data_ids)
-    test_dataloader = DataLoader(
-        test_data_ids, sampler=test_sampler, batch_size=parameters['batchsize'])
-
-
-    print('Loading mode')
+    print('Loading model...')
     deepee_model = deepEM.DeepEM(parameters)
 
     model_path = pred_params['model_path']
@@ -112,12 +91,36 @@ def main():
                              resume=True)
 
     deepee_model.to(device)
+    ############
+
+    print(' Pre-Processing data')
+    test_data = prepdata.prep_input_data(
+        pred_params['test_data'], parameters, json_file=parameters['json_file'])
+    # nntest_data, test_dataloader = read_test_data(test_data, parameters)
+    test = prep4nn.data2network(test_data, 'predict', parameters)
+
+    if len(test) == 0:
+        raise ValueError("Test set empty.")
+
+
+    start_time = time.time()
+    nntest_data = prep4nn.torch_data_2_network(
+        cdata2network=test, params=parameters, do_get_nn_data=True)
+    print("torch_data_2_network: --- %s seconds ---" % (time.time() - start_time))
+
+    te_data_size = len(nntest_data['nn_data']['ids'])
+
+    test_data_ids = TensorDataset(torch.arange(te_data_size))
+    test_sampler = SequentialSampler(test_data_ids)
+    test_dataloader = DataLoader(
+        test_data_ids, sampler=test_sampler, batch_size=parameters['batchsize'])
+
+
+
 
     # with profile(activities=[
     #         ProfilerActivity.CPU, ProfilerActivity.CUDA], record_shapes=True,with_stack=True) as prof:
     #     with record_function("model_inference"):
-
-
 
 
     print('predicting')

@@ -1,9 +1,9 @@
 import torch
 from tqdm import tqdm
 
-from eval.evalRE import write_entity_relations
-from eval.evalEV import write_events
-from utils import utils
+from DeepEventMine.eval.evalRE import write_entity_relations
+from DeepEventMine.eval.evalEV import write_events
+from DeepEventMine.utils import utils
 import time
 
 def predict(model, result_dir, eval_dataloader, eval_data, g_entity_ids_, params,write_files=True):
