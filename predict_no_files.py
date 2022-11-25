@@ -124,13 +124,14 @@ def main():
 
 
     print('predicting')
-    predict(model=deepee_model,
-            result_dir=result_dir,
-            eval_dataloader=test_dataloader,
-            eval_data=nntest_data,
-            g_entity_ids_=test_data['g_entity_ids_'],
-            params=parameters,
-            write_files = True)
+    ids2ent_tri_eve = predict(model=deepee_model,
+                        result_dir=result_dir,
+                        eval_dataloader=test_dataloader,
+                        eval_data=nntest_data,
+                        g_entity_ids_=test_data['g_entity_ids_'],
+                        params=parameters,
+                        write_files = False,
+                        get_data=True)
 
     # print(prof.key_averages().table(sort_by="cuda_time_total", row_limit=10))
 

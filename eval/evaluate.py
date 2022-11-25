@@ -2,11 +2,12 @@ import torch
 from tqdm import tqdm
 
 from DeepEventMine.eval.evalRE import write_entity_relations
-from DeepEventMine.eval.evalEV import write_events
+from DeepEventMine.eval.evalEV import write_events,get_events
 from DeepEventMine.utils import utils
 import time
 
-def predict(model, result_dir, eval_dataloader, eval_data, g_entity_ids_, params,write_files=True):
+def predict(model, result_dir, eval_dataloader, eval_data,
+            g_entity_ids_, params,write_files=True,disable_tqdm=False, get_data=False):
     mapping_id_tag = params['mappings']['nn_mapping']['id_tag_mapping']
 
     # store predicted entities
@@ -28,7 +29,7 @@ def predict(model, result_dir, eval_dataloader, eval_data, g_entity_ids_, params
 
     is_eval_ev = False
     for step, batch in enumerate(
-            tqdm(eval_dataloader, desc="Iteration", leave=False)
+            tqdm(eval_dataloader, desc="Iteration", leave=False,disable=disable_tqdm)
     ):
         start_time = time.time()
         eval_data_ids = batch
@@ -178,6 +179,19 @@ def predict(model, result_dir, eval_dataloader, eval_data, g_entity_ids_, params
                         g_entity_ids_=g_entity_ids_,
                         params=params,
                         result_dir=result_dir)
+    if get_data:
+        return get_events(fids=fidss,
+                          all_ent_preds=ent_preds,
+                          all_words=wordss,
+                          all_offsets=offsetss,
+                          all_span_terms=all_ner_terms,
+                          all_span_indices=span_indicess,
+                          all_sub_to_words=sub_to_wordss,
+                          all_ev_preds=ev_preds,
+                          g_entity_ids_=g_entity_ids_,
+                          params=params,
+                          result_dir=result_dir)
+
 
     # print("(FILE writing): --- %s seconds ---" % (time.time() - file_time))
 
