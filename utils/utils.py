@@ -70,6 +70,8 @@ def serialize(obj, filename):
 def _parsing():
     parser = argparse.ArgumentParser()
     parser.add_argument('--yaml', type=str, required=True, help='yaml file')
+    parser.add_argument('--gpu', type=str, required=False, help='The GPU id')
+    parser.add_argument('--json_file', type=str, required=False, help='The json file with the data')
     args = parser.parse_args()
     return args
 
