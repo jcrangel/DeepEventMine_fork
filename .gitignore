@@ -8,12 +8,15 @@ settings.json
 #
 data/bert/
 data/models/
+data/my-pubmed/*
+data/my-pubmed/text/*
 #
 
 *.tar.gz
 
 #
 *.pyc
+trace.json
 
 #
 *.a1
@@ -23,6 +26,9 @@ data/models/
 *.txt.ori
 *.map
 *.inv.map
+*.pickle
+*.mem
+*.lprof
 
 #
 .vscode

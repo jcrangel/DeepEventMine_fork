@@ -4,16 +4,16 @@ bert_model: data/bert/scibert_scivocab_cased
 model_path: data/models/cg/model/
 saved_params: data/models/cg/cg.param
 
-test_data: data/my-pubmed/processed-text/text/
-json_file: /home/julio/repos/event_finder/DeepEventMine_fork/data/my-pubmed/my-pubmed.json
+test_data: data/pubmed100/processed-text/text/
+json_file: /home/julio/repos/event_finder/data/pubmed/pubmed.json
 
 ev_eval_script_path: eval/scripts/eval-ev-cg.py
 a2_entities: ['DNA_domain_or_region', 'Protein_domain_or_region']
 raw_text: True
 ner_predict_all: True
 
-result_dir: experiments/my-pubmed/results/
+result_dir: experiments/pubmed/results/
 
 gpu: 0
-batchsize: 16
+batchsize: 128
 seed: 42
