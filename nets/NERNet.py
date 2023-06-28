@@ -247,14 +247,14 @@ class NestedNERModel(BertPreTrainedModel):
         
         ## Computing trigger_indices in the GPU
         indices_t = torch.tensor(
-            self.params['mappings']['nn_mapping']['trTypes_Ids'],dtype=int,device=0)
+            self.params['mappings']['nn_mapping']['trTypes_Ids'],dtype=int,device=device)
         
-        index0 = torch.zeros([all_preds.shape[0], 1], dtype=int,device=0)
+        index0 = torch.zeros([all_preds.shape[0], 1], dtype=int,device=device)
         #We get all indices where al_preds is equal to some element of indices_t
         #Only search on the first dimention of all_preds
         trigger_indices = (all_preds.gather(1, index0)  == indices_t
                                 ).nonzero(as_tuple=False)
-        index2= torch.zeros([trigger_indices.shape[0],1],dtype=int,device=0)
+        index2= torch.zeros([trigger_indices.shape[0],1],dtype=int,device=device)
         trigger_indices = trigger_indices.gather(1, index2).squeeze(1).tolist()
         ##
 
